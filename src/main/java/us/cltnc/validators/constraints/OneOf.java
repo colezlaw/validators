@@ -35,4 +35,6 @@ public @interface OneOf {
   }
   
   String[] value() default {};
+  
+  boolean caseSensitive() default true;
 }

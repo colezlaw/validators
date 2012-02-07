@@ -23,6 +23,10 @@ public class Address {
   @USState(type=MatchType.LONG)
   private String state4;
   
+  @NotNull
+  @USState(type=MatchType.ANY, caseSensitive=false)
+  private String state5;
+  
   public Address() {}
   
   public void setState1(String state1) { this.state1 = state1; }
@@ -36,4 +40,7 @@ public class Address {
 
   public void setState4(String state4) { this.state4 = state4; }
   public String getState4() { return state4; }
+
+  public void setState5(String state5) { this.state5 = state5; }
+  public String getState5() { return state5; }
 }

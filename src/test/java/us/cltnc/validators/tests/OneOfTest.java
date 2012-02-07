@@ -48,12 +48,20 @@ public class OneOfTest {
     dp.setLongName("Pitcher");
     Set<ConstraintViolation<DiamondPosition>> violations =
         validator.validate(dp);
-    assertEquals(2, violations.size());
+    assertEquals(1, violations.size());
   }
   
   @Test
   public void testValid() {
     DiamondPosition dp = new DiamondPosition("1B", "First Base");
+    Set<ConstraintViolation<DiamondPosition>> violations =
+        validator.validate(dp);
+    assertEquals(0, violations.size());
+  }
+  
+  @Test
+  public void testCaseInsensitive() {
+    DiamondPosition dp = new DiamondPosition("1b", "fIrSt BaSe");
     Set<ConstraintViolation<DiamondPosition>> violations =
         validator.validate(dp);
     assertEquals(0, violations.size());

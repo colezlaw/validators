@@ -13,11 +13,13 @@ import us.cltnc.validators.constraints.OneOf;
  */
 public class DiamondPosition {
   @NotNull
-  @OneOf({"P","C","1B","2B","3B","SS","LF","CF","RF"})
+  @OneOf(value={"P","C","1B","2B","3B","SS","LF","CF","RF"}, caseSensitive=false)
   private String shortName;
   
   @NotNull
-  @OneOf({"Pitcher","Catcher","First Base","Second Base","Third Base","Shortstop","Left Field","Center Field","Right Field"})
+  @OneOf(value={
+      "Pitcher","Catcher","First Base","Second Base","Third Base","Shortstop","Left Field","Center Field","Right Field"},
+      caseSensitive=false)
   private String longName;
   
   public DiamondPosition() {}

@@ -29,6 +29,7 @@ public class USStateTest {
     ad.setState2("DC");
     ad.setState3("AE");
     ad.setState4("North Carolina");
+    ad.setState5("NC");
     Set<ConstraintViolation<Address>> violations = validator
         .validate(ad);
     assertEquals(0, violations.size());
@@ -41,8 +42,16 @@ public class USStateTest {
     ad.setState2("DC");
     ad.setState3("AE");
     ad.setState4("North Carolina");
+    ad.setState5("nOrTh CaRoLiNa");
     Set<ConstraintViolation<Address>> violations = validator
         .validate(ad);
-    assertEquals(1, violations.size());    
+    assertEquals(1, violations.size());
+    
+    ad.setState5("nc");
+    violations = validator
+        .validate(ad);
+    assertEquals(1, violations.size());
   }
+  
+  
 }

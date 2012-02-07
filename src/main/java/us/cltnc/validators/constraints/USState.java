@@ -23,7 +23,8 @@ import us.cltnc.validators.constraints.impl.USStateValidator;
 public @interface USState {
   public enum MatchType {
     SHORT,
-    LONG
+    LONG,
+    ANY
   }
   
   public enum MatchDomain {
@@ -41,6 +42,8 @@ public @interface USState {
   Class<?>[] groups() default {};
 
   Class<? extends Payload>[] payload() default {};
+  
+  boolean caseSensitive() default true;
 
   @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER })
   @Retention(RUNTIME)

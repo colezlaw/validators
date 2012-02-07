@@ -1,6 +1,8 @@
 package us.cltnc.validators.constraints.impl;
 
+import java.text.Collator;
 import java.util.Arrays;
+import java.util.TreeSet;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -10,6 +12,8 @@ import us.cltnc.validators.constraints.USState.MatchDomain;
 import us.cltnc.validators.constraints.USState.MatchType;
 
 public class USStateValidator implements ConstraintValidator<USState, String> {
+  private TreeSet<String> states;
+  
   private static final String[] US_SHORT = new String[] {
     "AL","AK","AZ","AR","CA",
     "CO","CT","DE","FL","GA",
@@ -57,13 +61,31 @@ public class USStateValidator implements ConstraintValidator<USState, String> {
     "Armed Forces Americas","Armed Forces Africa","Armed Forces Canada","Armed Forces Europe",
     "Armed Forces Middle East","Armed Forces Pacific"
   };
-  
-  private MatchType type;
-  private MatchDomain domain;
-  
+    
   public void initialize(USState annotation) {
-    this.type = annotation.type();
-    this.domain = annotation.domain();
+    if (!annotation.caseSensitive()) {
+      System.out.println("Doing a case-insensitve match");
+      Collator c = Collator.getInstance();
+      c.setStrength(Collator.PRIMARY);
+      states = new TreeSet<String>(c);
+    } else {
+      states = new TreeSet<String>();
+    }
+    
+    if ((MatchType.ANY == annotation.type()) || MatchType.SHORT == annotation.type()) {
+      states.addAll(Arrays.asList(US_SHORT));
+      if ((MatchDomain.US_DC == annotation.domain()) || (MatchDomain.US_DC_TERRITORIES == annotation.domain()))
+        states.addAll(Arrays.asList(DC_SHORT));
+      if (MatchDomain.US_DC_TERRITORIES == annotation.domain())
+        states.addAll(Arrays.asList(INTL_SHORT));
+    }
+    if ((MatchType.ANY == annotation.type()) || MatchType.LONG == annotation.type()) {
+      states.addAll(Arrays.asList(US_LONG));
+      if ((MatchDomain.US_DC == annotation.domain()) || (MatchDomain.US_DC_TERRITORIES == annotation.domain()))
+        states.addAll(Arrays.asList(DC_LONG));
+      if (MatchDomain.US_DC_TERRITORIES == annotation.domain())
+        states.addAll(Arrays.asList(INTL_LONG));
+    }
   }
 
   public boolean isValid(String value, ConstraintValidatorContext context) {
@@ -71,24 +93,6 @@ public class USStateValidator implements ConstraintValidator<USState, String> {
     // wouldn't allow me to do a composition with a list that we can't know
     // beforehand. I otherwise would have had to make separate validators
     // for each
-    boolean retval = false;
-    
-    if (MatchType.SHORT == type) {
-      if (Arrays.asList(US_SHORT).contains(value))
-        retval = true;
-      if ((MatchDomain.US_DC == domain) && (Arrays.asList(DC_SHORT).contains(value)))
-        retval = true;
-      else if ((MatchDomain.US_DC_TERRITORIES == domain) && (Arrays.asList(INTL_SHORT).contains(value)))
-        retval = true;
-    } else {
-      if (Arrays.asList(US_LONG).contains(value))
-        retval = true;
-      if ((MatchDomain.US_DC == domain) && (Arrays.asList(DC_LONG).contains(value)))
-        retval = true;
-      else if ((MatchDomain.US_DC_TERRITORIES == domain) && (Arrays.asList(INTL_LONG).contains(value)))
-        retval = true;      
-    }
-    
-    return retval;
+    return this.states.contains(value);
   }
 }
